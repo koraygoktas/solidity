@@ -1,0 +1,11 @@
+{
+  "name": "SafeBankProject",
+  "version": "1.0.0",
+  "type": "module",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.3",
+    "@types/node": "^24.10.1",
+    "ethers": "^6.16.0",
+    "typescript": "^5.9.3"
+  }
+}
