@@ -3,7 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-  // Port ayarını buraya ekleyin:
+  
   networks: {
     hardhat: {
       chainId: 31337, // Hardhat'in varsayılan Chain ID'si
