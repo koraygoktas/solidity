@@ -1,5 +1,17 @@
+import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 
-module.exports = {
+const config: HardhatUserConfig = {
   solidity: "0.8.20",
+  // Port ayarını buraya ekleyin:
+  networks: {
+    hardhat: {
+      chainId: 31337, // Hardhat'in varsayılan Chain ID'si
+    },
+    localhost: {
+      url: "http://127.0.0.1:8546", // Yeni portu tanımlayın (Örn: 8546)
+    }
+  }
 };
+
+export default config;
