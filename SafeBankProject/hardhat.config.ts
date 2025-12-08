@@ -9,7 +9,7 @@ const config: HardhatUserConfig = {
       chainId: 31337, // Hardhat'in varsayılan Chain ID'si
     },
     localhost: {
-      url: "http://127.0.0.1:8546", // Yeni portu tanımlayın (Örn: 8546)
+      url: "http://127.0.0.1:8545", // Yeni portu tanımlayın (Örn: 8546)
     }
   }
 };

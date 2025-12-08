@@ -7,24 +7,21 @@ contract SafeBank {
     event Deposit(address indexed user, uint256 amount);
     event Withdraw(address indexed user, uint256 amount);
 
-    // Para yatırma
     function deposit() external payable {
         require(msg.value > 0, "amount must be > 0");
-        balances[msg.sender] += msg.value;  // balance değil balances
+        balances[msg.sender] += msg.value;
         emit Deposit(msg.sender, msg.value);
     }
     
-    // Para çekme
-    function withdraw(uint256 amount) external {  // Withdraw değil withdraw (küçük w)
+    function withdraw(uint256 amount) external {
         require(amount > 0, "amount must be > 0");
         require(balances[msg.sender] >= amount, "insufficient balance");
-        balances[msg.sender] -= amount;  // += değil -=
+        balances[msg.sender] -= amount;
         payable(msg.sender).transfer(amount);
         emit Withdraw(msg.sender, amount);
     }
     
-    // Bakiyeyi okuma
     function getBalance(address user) external view returns(uint256) {
-        return balances[user];  // balance değil balances
+        return balances[user];
     }
 }
