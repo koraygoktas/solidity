@@ -13,7 +13,7 @@ describe("InterestBank", function () {
     const rate = await interestBank.ANNUAL_INTEREST_RATE();
     expect(rate).to.equal(500); // %5
   });
-
+  
   it("Should deposit ETH correctly", async function () {
     const InterestBank = await ethers.getContractFactory("InterestBank");
     const interestBank = await InterestBank.deploy();
