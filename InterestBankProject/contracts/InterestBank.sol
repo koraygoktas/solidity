@@ -22,7 +22,7 @@ contract InterestBank {
     
     // Para yatırma
     function deposit() external payable {
-        require(msg.value > 0, "amount must be > 0");
+        require(msg.value > 0, "aamount must be>0");
         
         // Önce mevcut faizi hesapla ve ekle
         if(accounts[msg.sender].balance > 0) {
