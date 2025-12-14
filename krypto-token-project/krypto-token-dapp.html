@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRYPTO Token - KRP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a35;
+            --text: #e0e7ff;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a35 50%, #0f0f23 100%);
+            color: var(--text);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .wallet-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .wallet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .wallet-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--error);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: var(--success);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .wallet-address {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #db2777 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(236, 72, 153, 0.6);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-accent:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-unit {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .info-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--error);
+        }
+
+        .notification.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .contract-info {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .contract-info strong {
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+        }
+
+        .owner-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 2.5rem; }
+            .actions-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🪙 KRYPTO</div>
+            <div class="tagline">Kendi kripto paranız - KRP Token</div>
+        </header>
+
+        <div id="notification" class="notification"></div>
+
+        <div class="wallet-section">
+            <div class="wallet-header">
+                <div class="wallet-status">
+                    <div class="status-dot" id="statusDot"></div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Cüzdan Durumu</div>
+                        <div class="wallet-address" id="walletAddress">Bağlı değil</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="connectBtn" onclick="connectWallet()">
+                    🦊 MetaMask Bağla
+                </button>
+            </div>
+            <div class="contract-info" id="contractInfo" style="display: none;">
+                <strong>Kontrat Adresi:</strong> <span id="contractAddress"></span>
+                <span class="owner-badge">SEPOLIA</span>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Bakiyem</div>
+                <div class="stat-value" id="myBalance">0</div>
+                <div class="stat-unit">KRP</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Toplam Arz</div>
+                <div class="stat-value" id="totalSupply">0</div>
+                <div class="stat-unit">KRP</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Token Bilgisi</div>
+                <div class="stat-value" style="font-size: 1.8rem;">KRP</div>
+                <div class="stat-unit">Krypto Token</div>
+            </div>
+        </div>
+
+        <div class="actions-grid">
+            <div class="action-card">
+                <h3>📤 Token Gönder</h3>
+                <div class="input-group">
+                    <label>Alıcı Adresi</label>
+                    <input type="text" id="transferTo" placeholder="0x...">
+                </div>
+                <div class="input-group">
+                    <label>Miktar (KRP)</label>
+                    <input type="number" id="transferAmount" placeholder="100" step="0.01" min="0">
+                </div>
+                <button class="btn btn-primary" onclick="transfer()" style="width: 100%;">
+                    Gönder
+                </button>
+                <div class="info-box">💡 Token'larınızı başka adreslere gönderin</div>
+            </div>
+
+            <div class="action-card">
+                <h3>🔥 Token Yak</h3>
+                <div class="input-group">
+                    <label>Yakılacak Miktar (KRP)</label>
+                    <input type="number" id="burnAmount" placeholder="50" step="0.01" min="0">
+                </div>
+                <button class="btn btn-secondary" onclick="burn()" style="width: 100%; margin-top: 2.3rem;">
+                    Yak
+                </button>
+                <div class="info-box">⚠️ Yakılan token'lar geri alınamaz</div>
+            </div>
+
+            <div class="action-card" id="mintCard" style="display: none;">
+                <h3>⚡ Token Bas <span class="owner-badge">OWNER</span></h3>
+                <div class="input-group">
+                    <label>Alıcı Adresi</label>
+                    <input type="text" id="mintTo" placeholder="0x...">
+                </div>
+                <div class="input-group">
+                    <label>Miktar (KRP)</label>
+                    <input type="number" id="mintAmount" placeholder="1000" step="0.01" min="0">
+                </div>
+                <button class="btn btn-accent" onclick="mint()" style="width: 100%;">
+                    Bas
+                </button>
+                <div class="info-box">👑 Sadece owner yeni token basabilir</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script>
+        // KONTRAT ADRESİNİ DEPLOY SONRASI GİRİN!
+        const CONTRACT_ADDRESS = "0xd382087e1323b79A2450E05FCe9dDa2E0d716B74";
+        const SEPOLIA_CHAIN_ID = "0xaa36a7";
+        const CONTRACT_ABI = [
+            "function name() view returns (string)",
+            "function symbol() view returns (string)",
+            "function decimals() view returns (uint8)",
+            "function totalSupply() view returns (uint256)",
+            "function balanceOf(address) view returns (uint256)",
+            "function owner() view returns (address)",
+            "function transfer(address to, uint256 amount) returns (bool)",
+            "function mint(address to, uint256 amount)",
+            "function burn(uint256 amount)",
+            "event Transfer(address indexed from, address indexed to, uint256 value)",
+            "event Mint(address indexed to, uint256 amount)",
+            "event Burn(address indexed from, uint256 amount)"
+        ];
+
+        let provider, signer, contract, userAddress;
+
+        async function connectWallet() {
+            try {
+                let ethereum = window.ethereum;
+                
+                if (!ethereum && window.web3) {
+                    ethereum = window.web3.currentProvider;
+                }
+                
+                if (!ethereum && window.parent && window.parent.ethereum) {
+                    ethereum = window.parent.ethereum;
+                }
+
+                if (!ethereum) {
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    ethereum = window.ethereum || (window.web3 && window.web3.currentProvider);
+                }
+
+                if (!ethereum) {
+                    alert('❌ MetaMask bulunamadı!\n\nLütfen MetaMask eklentisini yükleyin.');
+                    return;
+                }
+
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+
+                await ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: SEPOLIA_CHAIN_ID }],
+                }).catch(e => {
+                    if (e.code === 4902) alert('Sepolia ağını ekleyin!');
+                });
+
+                provider = new ethers.providers.Web3Provider(ethereum);
+                signer = provider.getSigner();
+                userAddress = accounts[0];
+                contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                document.getElementById('walletAddress').textContent = 
+                    userAddress.slice(0, 8) + '...' + userAddress.slice(-6);
+                document.getElementById('statusDot').classList.add('connected');
+                document.getElementById('connectBtn').textContent = '✅ Bağlandı';
+                document.getElementById('connectBtn').disabled = true;
+                document.getElementById('contractInfo').style.display = 'block';
+                document.getElementById('contractAddress').textContent = 
+                    CONTRACT_ADDRESS.slice(0, 8) + '...' + CONTRACT_ADDRESS.slice(-6);
+
+                showNotification('🎉 MetaMask bağlandı!', 'success');
+                await loadData();
+
+                // Owner kontrolü
+                const owner = await contract.owner();
+                if (owner.toLowerCase() === userAddress.toLowerCase()) {
+                    document.getElementById('mintCard').style.display = 'block';
+                }
+
+                ethereum.on('accountsChanged', () => location.reload());
+                ethereum.on('chainChanged', () => location.reload());
+
+            } catch (error) {
+                console.error(error);
+                showNotification('❌ Bağlantı hatası: ' + error.message, 'error');
+            }
+        }
+
+        async function loadData() {
+            if (!contract || !userAddress) return;
+            try {
+                const balance = await contract.balanceOf(userAddress);
+                const supply = await contract.totalSupply();
+                
+                document.getElementById('myBalance').textContent = 
+                    parseFloat(ethers.utils.formatEther(balance)).toFixed(2);
+                document.getElementById('totalSupply').textContent = 
+                    parseFloat(ethers.utils.formatEther(supply)).toFixed(0);
+            } catch (e) {
+                console.error('Veri yükleme hatası:', e);
+            }
+        }
+
+        async function transfer() {
+            if (!contract) {
+                showNotification('⚠️ Önce MetaMask\'ı bağlayın!', 'warning');
+                return;
+            }
+            
+            const to = document.getElementById('transferTo').value.trim();
+            const amount = document.getElementById('transferAmount').value;
+
+            if (!to || !amount || parseFloat(amount) <= 0) {
+                showNotification('⚠️ Geçerli bilgiler girin!', 'warning');
+                return;
+            }
+
+            if (!ethers.utils.isAddress(to)) {
+                showNotification('❌ Geçersiz adres!', 'error');
+                return;
+            }
+
+            try {
+                showNotification('⏳ İşlem gönderiliyor...', 'success');
+                const tx = await contract.transfer(to, ethers.utils.parseEther(amount));
+                await tx.wait();
+                
+                showNotification(`✅ ${amount} KRP gönderildi!`, 'success');
+                document.getElementById('transferTo').value = '';
+                document.getElementById('transferAmount').value = '';
+                await loadData();
+            } catch (e) {
+                console.error(e);
+                showNotification('❌ Transfer başarısız: ' + e.message, 'error');
+            }
+        }
+
+        async function burn() {
+            if (!contract) {
+                showNotification('⚠️ Önce MetaMask\'ı bağlayın!', 'warning');
+                return;
+            }
+            
+            const amount = document.getElementById('burnAmount').value;
+
+            if (!amount || parseFloat(amount) <= 0) {
+                showNotification('⚠️ Geçerli miktar girin!', 'warning');
+                return;
+            }
+
+            try {
+                showNotification('⏳ Token yakılıyor...', 'success');
+                const tx = await contract.burn(ethers.utils.parseEther(amount));
+                await tx.wait();
+                
+                showNotification(`🔥 ${amount} KRP yakıldı!`, 'success');
+                document.getElementById('burnAmount').value = '';
+                await loadData();
+            } catch (e) {
+                console.error(e);
+                showNotification('❌ Yakma başarısız: ' + e.message, 'error');
+            }
+        }
+
+        async function mint() {
+            if (!contract) {
+                showNotification('⚠️ Önce MetaMask\'ı bağlayın!', 'warning');
+                return;
+            }
+            
+            const to = document.getElementById('mintTo').value.trim();
+            const amount = document.getElementById('mintAmount').value;
+
+            if (!to || !amount || parseFloat(amount) <= 0) {
+                showNotification('⚠️ Geçerli bilgiler girin!', 'warning');
+                return;
+            }
+
+            if (!ethers.utils.isAddress(to)) {
+                showNotification('❌ Geçersiz adres!', 'error');
+                return;
+            }
+
+            try {
+                showNotification('⏳ Token basılıyor...', 'success');
+                const tx = await contract.mint(to, ethers.utils.parseEther(amount));
+                await tx.wait();
+                
+                showNotification(`⚡ ${amount} KRP basıldı!`, 'success');
+                document.getElementById('mintTo').value = '';
+                document.getElementById('mintAmount').value = '';
+                await loadData();
+            } catch (e) {
+                console.error(e);
+                showNotification('❌ Basma başarısız: ' + e.message, 'error');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const n = document.getElementById('notification');
+            n.textContent = message;
+            n.className = `notification ${type} show`;
+            setTimeout(() => n.classList.remove('show'), 5000);
+        }
+
+        // Otomatik yenileme
+        setInterval(() => {
+            if (contract && userAddress) loadData();
+        }, 30000);
+    </script>
+</body>
+</html>
