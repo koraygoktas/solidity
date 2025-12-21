@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple NFT DApp</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Simple NFT</h1>
+            <button id="connectBtn" class="btn-primary">Connect Wallet</button>
+            <div id="accountInfo" class="hidden">
+                <p>Connected: <span id="account"></span></p>
+                <p>Balance: <span id="nftBalance"></span> NFTs</p>
+            </div>
+        </header>
+
+        <main>
+            <!-- Mint Section -->
+            <section class="card">
+                <h2>Mint New NFT</h2>
+                <div class="form-group">
+                    <label>Recipient Address:</label>
+                    <input type="text" id="mintAddress" placeholder="0x...">
+                </div>
+                <div class="form-group">
+                    <label>Token URI (IPFS or URL):</label>
+                    <input type="text" id="tokenURI" placeholder="ipfs://QmExample...">
+                </div>
+                <button id="mintBtn" class="btn-primary">Mint NFT</button>
+            </section>
+
+            <!-- Transfer Section -->
+            <section class="card">
+                <h2>Transfer NFT</h2>
+                <div class="form-group">
+                    <label>Token ID:</label>
+                    <input type="number" id="transferTokenId" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>To Address:</label>
+                    <input type="text" id="transferAddress" placeholder="0x...">
+                </div>
+                <button id="transferBtn" class="btn-primary">Transfer NFT</button>
+            </section>
+
+            <!-- My NFTs Section -->
+            <section class="card">
+                <h2>My NFTs</h2>
+                <button id="loadNFTsBtn" class="btn-secondary">Load My NFTs</button>
+                <div id="nftList" class="nft-grid"></div>
+            </section>
+
+            <!-- Contract Info -->
+            <section class="card">
+                <h2>Contract Info</h2>
+                <p>Contract Address: <code id="contractAddress"></code></p>
+                <p>Total Supply: <span id="totalSupply">0</span></p>
+                <button id="refreshBtn" class="btn-secondary">Refresh</button>
+            </section>
+        </main>
+
+        <div id="status" class="status hidden"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
