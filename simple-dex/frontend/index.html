@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 SimpleSwap DEX</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🔄 SimpleSwap DEX</h1>
+            <button id="connectBtn" class="connect-btn">Connect Wallet</button>
+            <div id="walletInfo" class="wallet-info hidden">
+                <span id="walletAddress"></span>
+                <span id="walletBalance"></span>
+            </div>
+        </header>
+
+        <!-- Pool Stats -->
+        <section class="pool-stats">
+            <h2>📊 Pool Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Reserve ETH</div>
+                    <div class="stat-value" id="reserveETH">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Reserve KRP</div>
+                    <div class="stat-value" id="reserveKRP">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Price</div>
+                    <div class="stat-value" id="price">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Your LP Shares</div>
+                    <div class="stat-value" id="userShares">-</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabs -->
+        <section class="tabs">
+            <button class="tab-btn active" data-tab="swap">🔄 Swap</button>
+            <button class="tab-btn" data-tab="liquidity">💧 Liquidity</button>
+        </section>
+
+        <!-- Swap Tab -->
+        <section id="swap" class="tab-content active">
+            <div class="swap-container">
+                <h3>Swap Tokens</h3>
+                
+                <!-- Swap Direction -->
+                <div class="swap-direction">
+                    <label>
+                        <input type="radio" name="swapDirection" value="ethToToken" checked>
+                        ETH → KRP
+                    </label>
+                    <label>
+                        <input type="radio" name="swapDirection" value="tokenToEth">
+                        KRP → ETH
+                    </label>
+                </div>
+
+                <!-- Input -->
+                <div class="input-group">
+                    <label id="fromLabel">From (ETH)</label>
+                    <input type="number" id="swapInput" placeholder="0.0" step="0.001">
+                    <button class="max-btn" id="maxBtn">MAX</button>
+                </div>
+
+                <!-- Arrow -->
+                <div class="swap-arrow">⬇️</div>
+
+                <!-- Output -->
+                <div class="input-group">
+                    <label id="toLabel">To (KRP)</label>
+                    <input type="text" id="swapOutput" placeholder="0.0" readonly>
+                </div>
+
+                <!-- Slippage -->
+                <div class="slippage-info">
+                    <span>Slippage Tolerance: 0.5%</span>
+                    <span id="feeInfo">Fee: 0.3%</span>
+                </div>
+
+                <!-- Swap Button -->
+                <button id="swapBtn" class="primary-btn" disabled>
+                    Connect Wallet to Swap
+                </button>
+
+                <div id="swapStatus" class="status-message hidden"></div>
+            </div>
+        </section>
+
+        <!-- Liquidity Tab -->
+        <section id="liquidity" class="tab-content">
+            <div class="liquidity-container">
+                <!-- Add Liquidity -->
+                <div class="liquidity-section">
+                    <h3>💧 Add Liquidity</h3>
+                    
+                    <div class="input-group">
+                        <label>ETH Amount</label>
+                        <input type="number" id="addEthAmount" placeholder="0.0" step="0.001">
+                    </div>
+
+                    <div class="input-group">
+                        <label>KRP Amount</label>
+                        <input type="number" id="addTokenAmount" placeholder="0.0" step="1">
+                    </div>
+
+                    <div class="info-box">
+                        <p>💡 Amounts must maintain current pool ratio</p>
+                        <p id="ratioInfo">Current ratio: 1 ETH = - KRP</p>
+                    </div>
+
+                    <button id="addLiquidityBtn" class="primary-btn" disabled>
+                        Connect Wallet to Add Liquidity
+                    </button>
+
+                    <div id="addLiquidityStatus" class="status-message hidden"></div>
+                </div>
+
+                <!-- Remove Liquidity -->
+                <div class="liquidity-section">
+                    <h3>💸 Remove Liquidity</h3>
+                    
+                    <div class="input-group">
+                        <label>LP Shares to Remove</label>
+                        <input type="number" id="removeShares" placeholder="0.0" step="0.001">
+                        <button class="max-btn" id="maxSharesBtn">MAX</button>
+                    </div>
+
+                    <div class="info-box">
+                        <p id="removePreview">You will receive: -</p>
+                    </div>
+
+                    <button id="removeLiquidityBtn" class="primary-btn" disabled>
+                        Connect Wallet to Remove Liquidity
+                    </button>
+
+                    <div id="removeLiquidityStatus" class="status-message hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transactions -->
+        <section class="transactions">
+            <h2>📜 Recent Transactions</h2>
+            <div id="txList" class="tx-list">
+                <p class="empty-state">No transactions yet</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                SimpleSwap DEX | Sepolia Testnet | 
+                <a href="https://sepolia.etherscan.io/address/0xfb8A0B3e7b55Fe84C55A2731Dcb22008e55D8be3" target="_blank">
+                    View Contract
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
