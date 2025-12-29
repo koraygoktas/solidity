@@ -1,7 +1,18 @@
+# Dependencies
 node_modules/
-.env
-cache/
+frontend/node_modules/
+
+# Build
 artifacts/
-typechain-types/
-coverage/
+cache/
+frontend/.next/
+frontend/out/
+
+# Env
+.env
+
+**/node_modules/
+
+# Locks
 package-lock.json
+frontend/package-lock.json

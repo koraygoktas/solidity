@@ -1,22 +1,27 @@
-async function main(){
-    const [deployer] = await ethers.getSigners();
-    console.log("deploying with : ",deployer.address);
+const { ethers } = require("hardhat");
 
-    const Token = await ethers.getContractFactory("GovernanceToken");
-    const token = await Token.deploy(ethers.parseEther("1000000"));
-    await token.waitForDeployment();
-    console.log("Token:",await token.getAddress());
+async function main() {
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying with:", deployer.address);
 
-    const DAO = await ethers.getContractFactory("DAOGovernance");
-    const dao = await DAO.deploy(await token.getAddress());
-    await dao.waitForDeployment();
-    console.log("DAO :",await dao.getAddress());
+  // Token deploy (gas limiti kaldır)
+  const Token = await ethers.getContractFactory("GovernanceToken");
+  const token = await Token.deploy(ethers.parseEther("1000000"));
+  await token.waitForDeployment();
+  console.log("Token:", await token.getAddress());
 
-    await token.delegate(deployer.address);
-    console.log("voting power activated!");
+  // DAO deploy (gas limiti kaldır)
+  const DAO = await ethers.getContractFactory("DAOGovernance");
+  const dao = await DAO.deploy(await token.getAddress());
+  await dao.waitForDeployment();
+  console.log("DAO:", await dao.getAddress());
+
+  // Delegate
+  await token.delegate(deployer.address);
+  console.log("Voting power activated!");
 }
 
-main().catch((error)=>{
-    console.error(error);
-    process.exitCode=1;
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
 });

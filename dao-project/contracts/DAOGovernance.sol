@@ -8,7 +8,7 @@ contract DAOGovernance is Ownable {
     GovernanceToken public governanceToken;
     
     uint256 public proposalCount;
-    uint256 public constant VOTING_PERIOD = 3 days;
+    uint256 public constant VOTING_PERIOD = 300;
     uint256 public constant MIN_VOTES_REQUIRED = 100 * 10**18;
     
     enum ProposalState { Pending, Active, Succeeded, Defeated, Executed }
@@ -22,9 +22,9 @@ contract DAOGovernance is Ownable {
         uint256 startBlock;
         uint256 endTime;
         bool executed;
-        mapping(address => bool) hasVoted;
+        
     }
-    
+    mapping(uint256 => mapping(address => bool)) public hasVoted;
     mapping(uint256 => Proposal) public proposals;
     
     event ProposalCreated(uint256 indexed proposalId, address proposer, string description);
@@ -56,12 +56,12 @@ contract DAOGovernance is Ownable {
     function vote(uint256 proposalId, bool support) external {
         Proposal storage proposal = proposals[proposalId];
         require(block.timestamp < proposal.endTime, "Voting ended");
-        require(!proposal.hasVoted[msg.sender], "Already voted");
+        require(!hasVoted[proposalId][msg.sender], "Already voted");
         
         uint256 votes = governanceToken.getPastVotes(msg.sender, proposal.startBlock);
         require(votes > 0, "No voting power");
         
-        proposal.hasVoted[msg.sender] = true;
+         hasVoted[proposalId][msg.sender] = true;
         
         if (support) {
             proposal.forVotes += votes;
