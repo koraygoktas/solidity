@@ -31,10 +31,10 @@ async function main() {
   await usdc.connect(user1).approve(addresses.lendingPool, 5000e6);
   await lendingPool.connect(user1).deposit(addresses.usdc, 5000e6);
   
-  const [deposit1, borrow1] = await lendingPool.getUserBalance(user1.address, addresses.usdc);
+  const [deposit1] = await lendingPool.getUserBalance(user1.address, addresses.usdc);
   console.log("User1 USDC deposit:", Number(deposit1) / 1e6, "USDC");
   
-  const [totalCollateral, totalBorrow] = await lendingPool.getAccountLiquidity(user1.address);
+  const [totalCollateral] = await lendingPool.getAccountLiquidity(user1.address);
   console.log("User1 collateral power:", hre.ethers.formatEther(totalCollateral), "USD");
   
   console.log("\n" + "=".repeat(60));
@@ -44,7 +44,7 @@ async function main() {
   await dai.connect(user2).approve(addresses.lendingPool, hre.ethers.parseEther("10000"));
   await lendingPool.connect(user2).deposit(addresses.dai, hre.ethers.parseEther("10000"));
   
-  const [deposit2, borrow2] = await lendingPool.getUserBalance(user2.address, addresses.dai);
+  const [deposit2] = await lendingPool.getUserBalance(user2.address, addresses.dai);
   console.log("User2 DAI deposit:", hre.ethers.formatEther(deposit2), "DAI");
   
   console.log("\n" + "=".repeat(60));
@@ -53,7 +53,7 @@ async function main() {
   
   await lendingPool.connect(user1).borrow(addresses.dai, hre.ethers.parseEther("2000"));
   
-  const [depositDAI, borrowDAI] = await lendingPool.getUserBalance(user1.address, addresses.dai);
+  const [, borrowDAI] = await lendingPool.getUserBalance(user1.address, addresses.dai);
   console.log("User1 DAI borrow:", hre.ethers.formatEther(borrowDAI), "DAI");
   
   let healthFactor = await lendingPool.getHealthFactor(user1.address);
@@ -105,11 +105,11 @@ async function main() {
   console.log("FINAL SUMMARY");
   console.log("=".repeat(60));
   
-  const [user1Deposit, user1Borrow] = await lendingPool.getUserBalance(user1.address, addresses.usdc);
-  const [user1DepositDAI, user1BorrowDAI] = await lendingPool.getUserBalance(user1.address, addresses.dai);
+  const [user1DepositUSDC] = await lendingPool.getUserBalance(user1.address, addresses.usdc);
+  const [, user1BorrowDAI] = await lendingPool.getUserBalance(user1.address, addresses.dai);
   
   console.log("\nUser1:");
-  console.log("  USDC Deposit:", Number(user1Deposit) / 1e6, "USDC");
+  console.log("  USDC Deposit:", Number(user1DepositUSDC) / 1e6, "USDC");
   console.log("  DAI Borrow:", hre.ethers.formatEther(user1BorrowDAI), "DAI");
   console.log("  Health Factor:", hre.ethers.formatEther(await lendingPool.getHealthFactor(user1.address)));
   
@@ -128,4 +128,4 @@ main()
     console.error("\nTest failed:");
     console.error(error.message);
     process.exit(1);
-  });
+  });   

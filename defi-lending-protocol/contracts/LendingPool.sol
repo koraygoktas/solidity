@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; //belirli fonkları içermesini sağlıyor
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"; //bazıları false olsa dahi revert olmaz onun için
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol"; //aynı anda işleme girilmesini engelliyor
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./InterestRateModel.sol";
 import "./PriceOracle.sol";
 
-/**
- * @title LendingPool
- * @notice Aave/Compound tarzı lending/borrowing protokolü
- */
 contract LendingPool is ReentrancyGuard {
     using SafeERC20 for IERC20;
     
@@ -191,7 +187,9 @@ contract LendingPool is ReentrancyGuard {
         UserAccount storage debtAccount = userAccounts[borrower][debtToken];
         uint256 currentDebt = (debtAccount.borrowBalance * markets[debtToken].borrowIndex) / debtAccount.borrowIndex;
         require(currentDebt > 0, "No debt");
-        require(debtAmount <= currentDebt, "Repay too much");
+        
+        uint256 maxLiquidate = (currentDebt * 5000) / 10000;
+        require(debtAmount <= maxLiquidate, "Liquidate too much");
         
         uint256 collateralSeized = calculateCollateralSeized(debtToken, collateralToken, debtAmount);
         
@@ -239,20 +237,22 @@ contract LendingPool is ReentrancyGuard {
                 totalBorrow += priceOracle.getValueInUSD(token, borrowed);
             }
         }
-    }
-    
+        }
     function calculateCollateralSeized(
-        address debtToken,
-        address collateralToken,
-        uint256 debtAmount
-    ) public view returns (uint256) {
-        uint256 debtValue = priceOracle.getValueInUSD(debtToken, debtAmount);
-        uint256 valueWithBonus = (debtValue * (10000 + LIQUIDATION_BONUS)) / 10000;
-        uint256 collateralPrice = priceOracle.getPrice(collateralToken);
-        return (valueWithBonus * 1e8) / collateralPrice;
-    }
-    
-    function accrueInterest(address token) public {
+            address debtToken,
+            address collateralToken,
+            uint256 debtAmount
+        ) public view returns (uint256) {
+            uint256 debtPrice = priceOracle.getPrice(debtToken);
+            uint256 collateralPrice = priceOracle.getPrice(collateralToken);
+            
+            uint256 debtValueWithBonus = (debtAmount * debtPrice * (10000 + LIQUIDATION_BONUS)) / 10000;
+            uint256 collateralAmount = debtValueWithBonus / collateralPrice;
+            
+            return collateralAmount;
+        }
+
+        function accrueInterest(address token) public {
         Market storage market = markets[token];
         uint256 currentBlock = block.number;
         
