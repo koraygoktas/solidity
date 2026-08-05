@@ -150,6 +150,34 @@ function revokeConfirmation(uint _txIndex)
 
 }
 
+function getOwners() public view returns (address[] memory) {
+  return owners;
+}
 
+function getTransactionCount() public view returns (uint) {
+  return transactions.length;
+}
+
+function getTransaction(uint _txIndex)
+  public 
+  view
+  returns (
+    address to,
+    uint value,
+    bytes memory data,
+    bool executed,
+    uint numConfirmations
+  )
+{
+  Transaction storage transaction = transactions[_txIndex];
+
+  return (
+    transaction.to,
+    transaction.value,
+    transaction.data,
+    transaction.executed,
+    transaction.numConfirmations
+  );
+}
 
 }
