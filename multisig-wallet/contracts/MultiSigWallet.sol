@@ -11,6 +11,23 @@ contract MultiSigWallet {
     _;
   }
 
+  modifier txExists(uint _txIndex) {
+    require(_txIndex < transactions.length,"tx does not exist");
+    _;
+  }
+
+  modifier notExecuted(uint _txIndex){
+    require(!transactions[_txIndex].executed,"tx already executed");
+    _;
+  }
+
+  modifier notConfirmed(uint _txIndex) {
+    require(!isConfirmed[_txIndex][msg.sender],"tx already confirmed");
+    _;
+  }
+
+
+
 struct Transaction{
   address to;
   uint value;
@@ -32,7 +49,7 @@ event RevokeConfirmation(address indexed owner,uint indexed txIndes);
 event ExecuteTransaction(address indexed owner,uint indexed txIndes);
 
 
-Transaction[] public transaction;
+Transaction[] public transactions;
 mapping(uint => mapping(address =>bool)) public isConfirmed;
 
 constructor(address[] memory _owners, uint _numconfirmationRequired){
@@ -65,9 +82,9 @@ function submitTransaction(
   uint _value,
   bytes memory _data
 ) public onlyOwner {
-  uint txIndex = transaction.length;
+  uint txIndex = transactions.length;
 
-  transaction.push(
+  transactions.push(
     Transaction({
       to : _to,
       value : _value,
@@ -78,6 +95,61 @@ function submitTransaction(
   );
   emit SubmitTransaction(msg.sender,txIndex, _to, _value, _data);
 }
+
+function confirmTransaction(uint _txIndex)
+  public 
+  onlyOwner
+  txExists(_txIndex)
+  notExecuted(_txIndex)
+  notConfirmed(_txIndex)
+{
+  Transaction storage transaction = transactions[_txIndex];
+  transaction.numConfirmations += 1;
+  isConfirmed[_txIndex][msg.sender] = true;
+
+  emit ConfirmTransaction(msg.sender, _txIndex);
+}
+
+function executeTransaction(uint _txIndex)
+    public
+    onlyOwner
+    txExists(_txIndex)
+    notExecuted(_txIndex)
+{
+    Transaction storage transaction = transactions[_txIndex];
+
+    require(
+        transaction.numConfirmations >= numConfirmationRequired,
+        "cannot execute tx"
+    );
+
+    transaction.executed = true;
+
+    (bool success, ) = transaction.to.call{value: transaction.value}(
+        transaction.data
+    );
+    require(success, "tx failed");
+
+    emit ExecuteTransaction(msg.sender, _txIndex);
+}
+
+function revokeConfirmation(uint _txIndex)
+  public 
+  onlyOwner
+  txExists(_txIndex)
+  notExecuted(_txIndex)
+{
+  Transaction storage transaction = transactions[_txIndex];
+
+  require(isConfirmed[_txIndex][msg.sender],"tx not confirmed");
+
+  transaction.numConfirmations -= 1;
+  isConfirmed[_txIndex][msg.sender] = false;
+
+  emit RevokeConfirmation(msg.sender, _txIndex);
+
+}
+
 
 
 }

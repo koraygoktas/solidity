@@ -6,23 +6,29 @@ import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, Typed
   
 
   export interface MultiSigWalletInterface extends Interface {
-    getFunction(nameOrSignature: "isConfirmed" | "isOwner" | "numConfirmationRequired" | "owners" | "submitTransaction" | "transaction"): FunctionFragment;
+    getFunction(nameOrSignature: "confirmTransaction" | "executeTransaction" | "isConfirmed" | "isOwner" | "numConfirmationRequired" | "owners" | "revokeConfirmation" | "submitTransaction" | "transactions"): FunctionFragment;
 
     getEvent(nameOrSignatureOrTopic: "ConfirmTransaction" | "Deposit" | "ExecuteTransaction" | "RevokeConfirmation" | "SubmitTransaction"): EventFragment;
 
-    encodeFunctionData(functionFragment: 'isConfirmed', values: [BigNumberish, AddressLike]): string;
+    encodeFunctionData(functionFragment: 'confirmTransaction', values: [BigNumberish]): string;
+encodeFunctionData(functionFragment: 'executeTransaction', values: [BigNumberish]): string;
+encodeFunctionData(functionFragment: 'isConfirmed', values: [BigNumberish, AddressLike]): string;
 encodeFunctionData(functionFragment: 'isOwner', values: [AddressLike]): string;
 encodeFunctionData(functionFragment: 'numConfirmationRequired', values?: undefined): string;
 encodeFunctionData(functionFragment: 'owners', values: [BigNumberish]): string;
+encodeFunctionData(functionFragment: 'revokeConfirmation', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'submitTransaction', values: [AddressLike, BigNumberish, BytesLike]): string;
-encodeFunctionData(functionFragment: 'transaction', values: [BigNumberish]): string;
+encodeFunctionData(functionFragment: 'transactions', values: [BigNumberish]): string;
 
-    decodeFunctionResult(functionFragment: 'isConfirmed', data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: 'confirmTransaction', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'executeTransaction', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'isConfirmed', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'isOwner', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'numConfirmationRequired', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'owners', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'revokeConfirmation', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'submitTransaction', data: BytesLike): Result;
-decodeFunctionResult(functionFragment: 'transaction', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'transactions', data: BytesLike): Result;
   }
 
   
@@ -120,6 +126,22 @@ decodeFunctionResult(functionFragment: 'transaction', data: BytesLike): Result;
 
     
     
+    confirmTransaction: TypedContractMethod<
+      [_txIndex: BigNumberish, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
+    executeTransaction: TypedContractMethod<
+      [_txIndex: BigNumberish, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
     isConfirmed: TypedContractMethod<
       [arg0: BigNumberish, arg1: AddressLike, ],
       [boolean],
@@ -152,6 +174,14 @@ decodeFunctionResult(functionFragment: 'transaction', data: BytesLike): Result;
     
 
     
+    revokeConfirmation: TypedContractMethod<
+      [_txIndex: BigNumberish, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
     submitTransaction: TypedContractMethod<
       [_to: AddressLike, _value: BigNumberish, _data: BytesLike, ],
       [void],
@@ -160,7 +190,7 @@ decodeFunctionResult(functionFragment: 'transaction', data: BytesLike): Result;
     
 
     
-    transaction: TypedContractMethod<
+    transactions: TypedContractMethod<
       [arg0: BigNumberish, ],
       [[string, bigint, string, boolean, bigint] & {to: string, value: bigint, data: string, executed: boolean, numConfirmations: bigint }],
       'view'
@@ -170,7 +200,17 @@ decodeFunctionResult(functionFragment: 'transaction', data: BytesLike): Result;
 
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-    getFunction(nameOrSignature: 'isConfirmed'): TypedContractMethod<
+    getFunction(nameOrSignature: 'confirmTransaction'): TypedContractMethod<
+      [_txIndex: BigNumberish, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'executeTransaction'): TypedContractMethod<
+      [_txIndex: BigNumberish, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'isConfirmed'): TypedContractMethod<
       [arg0: BigNumberish, arg1: AddressLike, ],
       [boolean],
       'view'
@@ -190,12 +230,17 @@ getFunction(nameOrSignature: 'owners'): TypedContractMethod<
       [string],
       'view'
     >;
+getFunction(nameOrSignature: 'revokeConfirmation'): TypedContractMethod<
+      [_txIndex: BigNumberish, ],
+      [void],
+      'nonpayable'
+    >;
 getFunction(nameOrSignature: 'submitTransaction'): TypedContractMethod<
       [_to: AddressLike, _value: BigNumberish, _data: BytesLike, ],
       [void],
       'nonpayable'
     >;
-getFunction(nameOrSignature: 'transaction'): TypedContractMethod<
+getFunction(nameOrSignature: 'transactions'): TypedContractMethod<
       [arg0: BigNumberish, ],
       [[string, bigint, string, boolean, bigint] & {to: string, value: bigint, data: string, executed: boolean, numConfirmations: bigint }],
       'view'
