@@ -10,6 +10,31 @@
     <h1>MultiSig Wallet</h1>
     <button id="connectBtn">Connect Wallet</button>
     <p id="accountDisplay"></p>
+    <hr>
+
+    <h2>Cüzdan bilgileri</h2>
+    <p><strong>Kontrat Adresi:</strong><span id="contractAddressDisplay"></span></p>
+    <p><strong>Bakiye:</strong><span id="balanceDisplay"></span></p>
+    <p><strong>Gereken Onay Sayısı:</strong><span id="requireDisplay"></span></p>
+    <p><strong>Owners:</strong></p>
+    <ul id="ownersList"></ul>
+
+    <hr>
+    <h2>Yeni İşlem Öner</h2>
+    <form id="submitTxForm">
+        <label>Alıcı Adres:</label><br>
+        <input type="text" id="txToAddress" placeholder="0x..." required><br><br>
+
+        <label>Miktar (ETH):</label><br>
+        <input type="text" id="txValue" placeholder="1.0" required><br><br>
+        <button type="submit">İşlem Öner</button>
+    </form>
+
+    <hr>
+
+    <h2>İşlemler</h2>
+    <div id="transactionsList"></div>
+
     <script src="app.js"></script>
 </body>
 </html>

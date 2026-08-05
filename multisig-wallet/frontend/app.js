@@ -54,6 +54,7 @@ async function connectWallet() {
         contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, signer);
         console.log("kontrat bağlandı:",CONTRACT_ADDRESS);
         await loadWalletInfo();
+        await loadTransactions();
     
         accountDisplay.textContent = "Bağlı hesap: " + userAddress;
         console.log("Bağlandı:", userAddress);
@@ -72,7 +73,121 @@ async function loadWalletInfo(){
         console.log("Owners:",owners);
         console.log("Gereken onay sayısı:",required);
         console.log("Kontrat bakiyesi:",ethers.formatEther(balance),"ETH");
+
+        document.getElementById("contractAddressDisplay").textContent = CONTRACT_ADDRESS;
+        document.getElementById("balanceDisplay").textContent = ethers.formatEther(balance)+"ETH";
+        document.getElementById("requireDisplay").textContent = required.toString();
+        
+        const ownersList = document.getElementById("ownersList");
+        ownersList.innerHTML = "";
+        owners.forEach((ownerAddress)=>{
+            const li = document.createElement("li");
+            li.textContent = ownerAddress;
+            ownersList.appendChild(li);
+        });
+
     }   catch(err){
         console.error("bilgi yüklenirken hata:",err);
+    }
+}
+
+const submitTxForm = document.getElementById("submitTxForm");
+
+submitTxForm.addEventListener("submit", async (event) =>{
+    event.preventDefault();
+
+    const toAddress = document.getElementById("txToAddress").value;
+    const valueInEth = document.getElementById("txValue").value;
+
+    try{
+        const valueInWei = ethers.parseEther(valueInEth);
+        const tx = await contract.submitTransaction(toAddress, valueInWei, "0x");
+        console.log("işlem gönderildi, onay bekleniyor",tx.hash);
+
+        await tx.wait();
+        console.log("işlem onaylandı (blockcahine yazıldı)");
+
+        alert("işlem başarıyla oluşturuldu!");
+        submitTxForm.reset();
+
+        await loadWalletInfo();
+        await loadTransactions();
+    } catch(err){
+        console.error("işlem oluşturulurken hata:", err);
+        alert("işlem oluşturulamadı: "+err.message);
+    }
+});
+
+async function loadTransactions() {
+    try {
+        const txCount = await contract.getTransactionCount();
+        const transactionsList = document.getElementById("transactionsList");
+        transactionsList.innerHTML = "";
+
+        for (let i = 0; i < txCount; i++) {
+            const tx = await contract.getTransaction(i);
+            const to = tx[0];
+            const value = tx[1];
+            const executed = tx[3];
+            const numConfirmations = tx[4];
+
+            const isConfirmedByMe = await contract.isConfirmed(i, userAddress);
+
+            const div = document.createElement("div");
+            div.style.border = "1px solid #ccc";
+            div.style.padding = "10px";
+            div.style.marginBottom = "10px";
+
+            div.innerHTML = `
+                <p><strong>İşlem #${i}</strong></p>
+                <p>Alıcı: ${to}</p>
+                <p>Miktar: ${ethers.formatEther(value)} ETH</p>
+                <p>Onay: ${numConfirmations.toString()} / ${await contract.numConfirmationRequired()}</p>
+                <p>Durum: ${executed ? "Çalıştırıldı ✅" : "Bekliyor ⏳"}</p>
+            `;
+
+            if (!executed) {
+                if (!isConfirmedByMe) {
+                    const confirmBtn = document.createElement("button");
+                    confirmBtn.textContent = "Confirm";
+                    confirmBtn.addEventListener("click", () => confirmTransaction(i));
+                    div.appendChild(confirmBtn);
+                }
+
+                const executeBtn = document.createElement("button");
+                executeBtn.textContent = "Execute";
+                executeBtn.addEventListener("click", () => executeTransaction(i));
+                div.appendChild(executeBtn);
+            }
+
+            transactionsList.appendChild(div);
+        }
+    } catch (err) {
+        console.error("İşlemler yüklenirken hata:", err);
+    }
+}
+
+async function confirmTransaction(txIndex) {
+    try {
+        const tx = await contract.confirmTransaction(txIndex);
+        await tx.wait();
+        alert("İşlem onaylandı!");
+        await loadTransactions();
+    } catch (err) {
+        console.error("Onaylama hatası:", err);
+        alert("Onaylama başarısız: " + err.message);
+    }
+}
+
+async function executeTransaction(txIndex) {
+    try {
+        const tx = await contract.executeTransaction(txIndex);
+        await tx.wait();
+        alert("İşlem çalıştırıldı!");
+        await loadTransactions();
+        await loadWalletInfo();
+    } catch (err) {
+        console.error("Çalıştırma hatası:", err);
+        alert("Çalıştırma başarısız: " + err.message);
     }
 }
