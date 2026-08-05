@@ -152,6 +152,11 @@ async function loadTransactions() {
                     confirmBtn.textContent = "Confirm";
                     confirmBtn.addEventListener("click", () => confirmTransaction(i));
                     div.appendChild(confirmBtn);
+                } else{
+                    const revokeBtn = document.createElement("button");
+                    revokeBtn.textContent = "Revoke";
+                    revokeBtn.addEventListener("click",() => revokeConfirmation(i));
+                    div.appendChild(revokeBtn);
                 }
 
                 const executeBtn = document.createElement("button");
@@ -179,6 +184,18 @@ async function confirmTransaction(txIndex) {
     }
 }
 
+async function revokeConfirmation(txIndex){
+    try {
+        const tx = await contract.revokeConfirmation(txIndex);
+        await tx.wait();
+        alert("Onay geri çekildi!");
+        await loadTransactions();
+    } catch(err){
+        console.error("geri çekilme hatası:", err);
+        alert("geri çekme başarısız: " + err.message);
+    }
+}
+
 async function executeTransaction(txIndex) {
     try {
         const tx = await contract.executeTransaction(txIndex);
@@ -190,4 +207,48 @@ async function executeTransaction(txIndex) {
         console.error("Çalıştırma hatası:", err);
         alert("Çalıştırma başarısız: " + err.message);
     }
+}
+
+const depositForm = document.getElementById("depositForm");
+
+depositForm.addEventListener("submit",async (event)=>{
+    event.preventDefault();
+
+    const valueInEth = document.getElementById("depositValue").value;
+
+    try{
+        const valueInWei = ethers.parseEther(valueInEth);
+
+        const tx = await signer.sendTransaction({
+            to: CONTRACT_ADDRESS,
+            value : valueInWei
+        });
+        console.log("deposit gönderildi, onay ebkleniyor:",tx.hash);
+        await tx.wait();
+        console.log("deposit onaylandı");
+        alert("ETH başarıyla yatırıldı!");
+        depositForm.reset();
+
+        await loadWalletInfo();
+    }catch(err){
+        console.error("deposit hatası:",err);
+        alert("yatırma başarısız"+err.message);
+    }
+});
+
+if (typeof window.ethereum !== "undefined") {
+    window.ethereum.on("accountsChanged", async (accounts) => {
+        console.log("Hesap değişti:", accounts);
+
+        if (accounts.length === 0) {
+            accountDisplay.textContent = "Bağlantı kesildi.";
+            contract = undefined;
+        } else {
+            await connectWallet();
+        }
+    });
+
+    window.ethereum.on("chainChanged", () => {
+        window.location.reload();
+    });
 }
