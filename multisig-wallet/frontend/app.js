@@ -1,3 +1,14 @@
+const loadingOverlay = document.getElementById("loadingOverlay");
+const loadingText = document.getElementById("loadingText");
+
+function showLoading(message) {
+    loadingText.textContent = message || "İşleniyor...";
+    loadingOverlay.classList.remove("hidden");
+}
+
+function hideLoading() {
+    loadingOverlay.classList.add("hidden");
+}
 const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const CONTRACT_ABI = [
     {
@@ -75,7 +86,7 @@ async function loadWalletInfo(){
         console.log("Kontrat bakiyesi:",ethers.formatEther(balance),"ETH");
 
         document.getElementById("contractAddressDisplay").textContent = CONTRACT_ADDRESS;
-        document.getElementById("balanceDisplay").textContent = ethers.formatEther(balance)+"ETH";
+        document.getElementById("balanceDisplay").textContent = ethers.formatEther(balance)+" ETH";
         document.getElementById("requireDisplay").textContent = required.toString();
         
         const ownersList = document.getElementById("ownersList");
@@ -100,11 +111,13 @@ submitTxForm.addEventListener("submit", async (event) =>{
     const valueInEth = document.getElementById("txValue").value;
 
     try{
+        showLoading("İşlem gönderiliyor...");
         const valueInWei = ethers.parseEther(valueInEth);
         const tx = await contract.submitTransaction(toAddress, valueInWei, "0x");
         console.log("işlem gönderildi, onay bekleniyor",tx.hash);
 
         await tx.wait();
+        hideLoading();
         console.log("işlem onaylandı (blockcahine yazıldı)");
 
         alert("işlem başarıyla oluşturuldu!");
@@ -113,6 +126,7 @@ submitTxForm.addEventListener("submit", async (event) =>{
         await loadWalletInfo();
         await loadTransactions();
     } catch(err){
+        hideLoading();
         console.error("işlem oluşturulurken hata:", err);
         alert("işlem oluşturulamadı: "+err.message);
     }
@@ -150,17 +164,20 @@ async function loadTransactions() {
                 if (!isConfirmedByMe) {
                     const confirmBtn = document.createElement("button");
                     confirmBtn.textContent = "Confirm";
+                    confirmBtn.className = "confirm-btn"
                     confirmBtn.addEventListener("click", () => confirmTransaction(i));
                     div.appendChild(confirmBtn);
                 } else{
                     const revokeBtn = document.createElement("button");
                     revokeBtn.textContent = "Revoke";
+                    revokeBtn.className = "revoke-btn"
                     revokeBtn.addEventListener("click",() => revokeConfirmation(i));
                     div.appendChild(revokeBtn);
                 }
 
                 const executeBtn = document.createElement("button");
                 executeBtn.textContent = "Execute";
+                executeBtn.className = "execute-btn"
                 executeBtn.addEventListener("click", () => executeTransaction(i));
                 div.appendChild(executeBtn);
             }
@@ -174,11 +191,13 @@ async function loadTransactions() {
 
 async function confirmTransaction(txIndex) {
     try {
+        showLoading("Onaylanıyor...");
         const tx = await contract.confirmTransaction(txIndex);
         await tx.wait();
         alert("İşlem onaylandı!");
         await loadTransactions();
     } catch (err) {
+        hideLoading();
         console.error("Onaylama hatası:", err);
         alert("Onaylama başarısız: " + err.message);
     }
@@ -186,11 +205,13 @@ async function confirmTransaction(txIndex) {
 
 async function revokeConfirmation(txIndex){
     try {
+        showLoading("Onay geri çekiliyor...");
         const tx = await contract.revokeConfirmation(txIndex);
         await tx.wait();
         alert("Onay geri çekildi!");
         await loadTransactions();
     } catch(err){
+        hideLoading();
         console.error("geri çekilme hatası:", err);
         alert("geri çekme başarısız: " + err.message);
     }
@@ -198,12 +219,14 @@ async function revokeConfirmation(txIndex){
 
 async function executeTransaction(txIndex) {
     try {
+        showLoading("İşlem çalıştırılıyor...");
         const tx = await contract.executeTransaction(txIndex);
         await tx.wait();
         alert("İşlem çalıştırıldı!");
         await loadTransactions();
         await loadWalletInfo();
     } catch (err) {
+        hideLoading();
         console.error("Çalıştırma hatası:", err);
         alert("Çalıştırma başarısız: " + err.message);
     }
@@ -217,6 +240,7 @@ depositForm.addEventListener("submit",async (event)=>{
     const valueInEth = document.getElementById("depositValue").value;
 
     try{
+        showLoading("ETH yatırılıyor...");
         const valueInWei = ethers.parseEther(valueInEth);
 
         const tx = await signer.sendTransaction({
@@ -225,6 +249,7 @@ depositForm.addEventListener("submit",async (event)=>{
         });
         console.log("deposit gönderildi, onay ebkleniyor:",tx.hash);
         await tx.wait();
+        hideLoading();
         console.log("deposit onaylandı");
         alert("ETH başarıyla yatırıldı!");
         depositForm.reset();

@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --surface: #121a26;
+    --surface-2: #1a2436;
+    --border: #263449;
+    --text: #e6edf3;
+    --text-muted: #7d8ba1;
+    --neon-green: #00ff9d;
+    --neon-purple: #b26bff;
+    --neon-amber: #ffb020;
+    --neon-cyan: #3ee6ff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    max-width: 760px;
+    margin: 40px auto;
+    padding: 0 20px 60px;
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(circle at 15% 0%, rgba(178, 107, 255, 0.12), transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(0, 255, 157, 0.10), transparent 45%);
+    color: var(--text);
+}
+
+h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(0, 255, 157, 0.25);
+    margin-bottom: 4px;
+}
+
+h1::before {
+    content: "$ ";
+    color: var(--neon-purple);
+}
+
+h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--neon-cyan);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    border-left: 3px solid var(--neon-purple);
+    padding: 4px 0 4px 12px;
+    margin-top: 40px;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin: 32px 0;
+}
+
+p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+p strong {
+    color: var(--text);
+    font-weight: 500;
+}
+
+#accountDisplay {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--neon-green);
+}
+
+/* Buttons */
+button {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background-color: transparent;
+    color: var(--neon-green);
+    border: 1px solid var(--neon-green);
+    padding: 9px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 8px;
+    margin-top: 5px;
+    transition: all 0.15s ease;
+    box-shadow: 0 0 0 rgba(0, 255, 157, 0);
+}
+
+button:hover {
+    background-color: var(--neon-green);
+    color: #06110c;
+    box-shadow: 0 0 18px rgba(0, 255, 157, 0.55);
+}
+
+#connectBtn {
+    color: var(--neon-purple);
+    border-color: var(--neon-purple);
+    font-size: 0.95rem;
+    padding: 12px 24px;
+}
+
+#connectBtn:hover {
+    background-color: var(--neon-purple);
+    color: #16081f;
+    box-shadow: 0 0 22px rgba(178, 107, 255, 0.6);
+}
+
+button[type="submit"] {
+    color: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+}
+
+button[type="submit"]:hover {
+    background-color: var(--neon-cyan);
+    color: #06181c;
+    box-shadow: 0 0 18px rgba(62, 230, 255, 0.55);
+}
+
+/* Confirm / Revoke / Execute */
+button.confirm-btn {
+    color: var(--neon-green);
+    border-color: var(--neon-green);
+}
+button.confirm-btn:hover {
+    background-color: var(--neon-green);
+    color: #06110c;
+    box-shadow: 0 0 18px rgba(0, 255, 157, 0.55);
+}
+
+button.revoke-btn {
+    color: var(--neon-amber);
+    border-color: var(--neon-amber);
+}
+button.revoke-btn:hover {
+    background-color: var(--neon-amber);
+    color: #201400;
+    box-shadow: 0 0 18px rgba(255, 176, 32, 0.55);
+}
+
+button.execute-btn {
+    color: var(--neon-purple);
+    border-color: var(--neon-purple);
+}
+button.execute-btn:hover {
+    background-color: var(--neon-purple);
+    color: #16081f;
+    box-shadow: 0 0 18px rgba(178, 107, 255, 0.55);
+}
+
+/* Inputs */
+input[type="text"] {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 6px;
+    width: 320px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="text"]::placeholder {
+    color: var(--text-muted);
+}
+
+input[type="text"]:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 12px rgba(62, 230, 255, 0.35);
+}
+
+label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Owners list */
+ul#ownersList {
+    list-style: none;
+    padding: 0;
+}
+
+ul#ownersList li {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--neon-green);
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text);
+}
+
+/* Transaction cards */
+#transactionsList > div {
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px;
+    padding: 18px !important;
+    margin-bottom: 14px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+}
+
+#transactionsList > div::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
+}
+
+#transactionsList strong {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--neon-cyan);
+}
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 23, 0.85);
+    backdrop-filter: blur(3px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-overlay.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 54px;
+    height: 54px;
+    border: 3px solid var(--border);
+    border-top: 3px solid var(--neon-green);
+    border-right: 3px solid var(--neon-cyan);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 20px rgba(0, 255, 157, 0.35);
+}
+
+#loadingText {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--neon-green);
+    margin-top: 16px;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

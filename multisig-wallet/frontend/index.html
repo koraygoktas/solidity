@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>MultiSig Wallet</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
 </head>
 
 <body>
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p id="loadingText">İşleniyor...</p>
+    </div>
     <h1>MultiSig Wallet</h1>
     <button id="connectBtn">Connect Wallet</button>
     <p id="accountDisplay"></p>
     <hr>
 
     <h2>Cüzdan bilgileri</h2>
-    <p><strong>Kontrat Adresi:</strong><span id="contractAddressDisplay"></span></p>
-    <p><strong>Bakiye:</strong><span id="balanceDisplay"></span></p>
-    <p><strong>Gereken Onay Sayısı:</strong><span id="requireDisplay"></span></p>
-    <p><strong>Owners:</strong></p>
+    <p><strong>Kontrat Adresi : </strong><span id="contractAddressDisplay"></span></p>
+    <p><strong>Bakiye : </strong><span id="balanceDisplay"></span></p>
+    <p><strong>Gereken Onay Sayısı : </strong><span id="requireDisplay"></span></p>
+    <p><strong>Owners : </strong></p>
     <ul id="ownersList"></ul>
 
     <hr>
